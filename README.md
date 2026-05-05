@@ -21,9 +21,9 @@ A sleek, feature-rich AI chat assistant powered by the [Groq API](https://consol
 
 ## 🖼️ Preview
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/934244f8-5898-4ae3-9014-013c16992fd2" />
-
+.
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/37bc6ee0-c80e-4c57-8c45-05106e44dc5e" />
-
+.
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f2137a3d-7d02-40fc-bda3-ece6b397067b" />
 
 ```
