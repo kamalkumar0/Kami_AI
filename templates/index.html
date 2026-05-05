@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kami AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sb-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    </div>
+    <button class="sb-icon-btn" onclick="toggleSidebar()" title="Hide Sidebar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </button>
+  </div>
+
+  <div class="sb-new-chat" onclick="newChat()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Chat
+    <span class="kbd">Ctrl K</span>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section-label">Features</div>
+    <a class="sb-item" href="#" onclick="startFeature('general'); return false;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Ask Anything
+    </a>
+    <a class="sb-item" href="#" onclick="startFeature('interview'); return false;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Interview Prep
+    </a>
+    <a class="sb-item" href="#" onclick="startFeature('prep'); return false;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Study Coach
+    </a>
+    <a class="sb-item" href="#" onclick="startFeature('code'); return false;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Code Help
+    </a>
+  </nav>
+
+  <div class="sb-history" id="sbHistory">
+    <div class="sb-section-label">History</div>
+    <div class="sb-history-empty" id="historyEmpty">No chats yet</div>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-stat-row"><span>Messages</span><span id="msgCount">0</span></div>
+    <div class="sb-stat-row"><span>Mode</span><span id="modeLabel">—</span></div>
+  </div>
+</aside>
+
+<!-- Show sidebar btn (when hidden) -->
+<button class="sb-show-btn" id="sbShowBtn" onclick="toggleSidebar()">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+</button>
+
+<!-- ═══════════ MAIN AREA ═══════════ -->
+<main class="main" id="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-title" id="topbarTitle">Kami AI</div>
+    <div class="topbar-right">
+      <span class="status-pill" id="statusPill">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Ready</span>
+      </span>
+      <!-- THEME TOGGLE -->
+      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- CHAT MESSAGES (hidden initially) -->
+  <div class="chat-area" id="chatArea" style="display:none;">
+    <div class="messages" id="messages"></div>
+  </div>
+
+  <!-- ═══ WELCOME / INPUT WRAPPER ═══ -->
+  <div class="center-wrap" id="centerWrap">
+
+    <!-- WELCOME HEADING -->
+    <div class="welcome-hero" id="welcomeHero">
+      <h1 class="hero-title">Kami AI</h1>
+      <p class="hero-sub">Your intelligent assistant for all kind of works by Kamal Kumar.</p>
+    </div>
+
+    <!-- MAIN INPUT BOX -->
+    <div class="input-card" id="inputCard">
+      <div class="input-card-inner">
+
+        <!-- JD area (shown in interview mode) -->
+        <div class="jd-zone" id="jdZone" style="display:none;">
+          <div class="jd-label">📄 Paste Job Description</div>
+          <textarea class="jd-textarea" id="jdInput" placeholder="Paste the job description here…"></textarea>
+          <div class="jd-divider"></div>
+        </div>
+
+        <!-- Main prompt input -->
+        <textarea class="prompt-input" id="promptInput" rows="1"
+          placeholder="Ask anything…"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"></textarea>
+
+        <!-- BOTTOM BAR -->
+        <div class="input-footer">
+          <div class="input-footer-left">
+            <button class="footer-pill-btn" id="featureBtn" onclick="toggleFeatureMenu()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span id="featureBtnLabel">General</span>
+            </button>
+            <!-- Feature dropdown -->
+            <div class="feature-menu" id="featureMenu">
+              <div class="feat-opt" onclick="setFeatureMode('general','General','Ask Anything…')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                General
+              </div>
+              <div class="feat-opt" onclick="setFeatureMode('interview','Interview Prep','Paste job description or ask an interview question…')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                Interview Prep
+              </div>
+              <div class="feat-opt" onclick="setFeatureMode('prep','Study Coach','What topic do you want to study or prepare?…')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg>
+                Study Coach
+              </div>
+              <div class="feat-opt" onclick="setFeatureMode('code','Code Help','Describe your coding problem or paste your code…')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Code Help
+              </div>
+            </div>
+          </div>
+
+          <div class="input-footer-right">
+            <!-- MODEL SELECTOR -->
+            <div class="model-wrap" id="modelWrap">
+              <button class="model-trigger" onclick="toggleModelMenu(event)" id="modelTrigger">
+                <span id="modelTriggerLabel">LLaMA 3.3 70B</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+
+              <!-- Model popup — opens ABOVE -->
+              <div class="model-popup" id="modelPopup">
+                <div class="model-popup-title">Choose Model</div>
+
+                <div class="model-group-label">LLaMA</div>
+                <div class="mpop-opt selected" id="opt-llama70b" onclick="pickModel('llama-3.3-70b-versatile','LLaMA 3.3 70B')">
+                  <div class="mpop-name">LLaMA 3.3 70B</div>
+                  <div class="mpop-desc">Best quality</div>
+                </div>
+                <div class="mpop-opt" id="opt-llama8b" onclick="pickModel('llama-3.1-8b-instant','LLaMA 3.1 8B')">
+                  <div class="mpop-name">LLaMA 3.1 8B</div>
+                  <div class="mpop-desc">Fastest response</div>
+                </div>
+                <div class="mpop-opt" id="opt-llama4scout" onclick="pickModel('meta-llama/llama-4-scout-17b-16e-instruct','LLaMA 4 Scout')">
+                  <div class="mpop-name">LLaMA 4 Scout</div>
+                  <div class="mpop-desc">Multimodal · Meta</div>
+                </div>
+
+                <div class="model-group-label" style="margin-top:8px;">Kimi</div>
+                <div class="mpop-opt" id="opt-kimi-k2" onclick="pickModel('moonshotai/kimi-k2-instruct','Kimi K2')">
+                  <div class="mpop-name">Kimi K2</div>
+                  <div class="mpop-desc">Moonshot AI · Latest</div>
+                </div>
+                <div class="mpop-opt" id="opt-kimi-k2-0905" onclick="pickModel('moonshotai/kimi-k2-instruct-0905','Kimi K2 0905')">
+                  <div class="mpop-name">Kimi K2 0905</div>
+                  <div class="mpop-desc">Moonshot AI · Stable</div>
+                </div>
+
+                <div class="model-group-label" style="margin-top:8px;">OpenAI OSS</div>
+                <div class="mpop-opt" id="opt-gpt-120b" onclick="pickModel('openai/gpt-oss-120b','GPT OSS 120B')">
+                  <div class="mpop-name">GPT OSS 120B</div>
+                  <div class="mpop-desc">OpenAI · Powerful</div>
+                </div>
+                <div class="mpop-opt" id="opt-gpt-20b" onclick="pickModel('openai/gpt-oss-20b','GPT OSS 20B')">
+                  <div class="mpop-name">GPT OSS 20B</div>
+                  <div class="mpop-desc">OpenAI · Fast</div>
+                </div>
+
+                <div class="model-group-label" style="margin-top:8px;">Qwen · Groq</div>
+                <div class="mpop-opt" id="opt-qwen3" onclick="pickModel('qwen/qwen3-32b','Qwen 3 32B')">
+                  <div class="mpop-name">Qwen 3 32B</div>
+                  <div class="mpop-desc">Alibaba · Reasoning</div>
+                </div>
+
+                <!-- <div class="model-group-label" style="margin-top:8px;">Google Gemini</div>
+                <div class="mpop-opt" id="opt-gemini-flash" onclick="pickModel('gemini-2.0-flash','Gemini 2.0 Flash')">
+                  <div class="mpop-name">Gemini 2.0 Flash</div>
+                  <div class="mpop-desc">Google · Fast · Free</div>
+                </div>
+                <div class="mpop-opt" id="opt-gemini-15-pro" onclick="pickModel('gemini-1.5-pro','Gemini 1.5 Pro')">
+                  <div class="mpop-name">Gemini 1.5 Pro</div>
+                  <div class="mpop-desc">Google · Powerful</div>
+                </div>
+                <div class="mpop-opt" id="opt-gemini-15-flash" onclick="pickModel('gemini-1.5-flash','Gemini 1.5 Flash')">
+                  <div class="mpop-name">Gemini 1.5 Flash</div>
+                  <div class="mpop-desc">Google · Lightweight</div>
+                </div> -->
+              </div>
+            </div>
+
+            <!-- SEND BTN -->
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE CHIPS (welcome only) -->
+    <div class="feature-chips" id="featureChips">
+      <button class="chip" onclick="setFeatureMode('interview','Interview Prep','Paste job description or ask an interview question…')">🎯 Interview Prep</button>
+      <button class="chip" onclick="setFeatureMode('prep','Study Coach','What topic do you want to study?…')">📚 Study Coach</button>
+      <button class="chip" onclick="setFeatureMode('code','Code Help','Describe your coding problem…')">💻 Code Help</button>
+    </div>
+
+  </div><!-- /center-wrap -->
+
+</main>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
